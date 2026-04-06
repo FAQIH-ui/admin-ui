@@ -8,29 +8,35 @@ function App() {
 
   return (
     <>
-      <div>
+    <div className="min-h-screen bg-neutral-700 flex flex-col items-center justify-center  text-center">
+      <div className="flex items-center justify-center space-x-8 mb-12">
         <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
+          <img src={viteLogo} className="w-24 h-24" alt="Vite logo" />
         </a>
         <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
+          <img src={reactLogo} 
+          className="w-24 h-24 animate-spin" 
+          alt="React logo" 
+          style={{animationDuration:"10s"}}
+          />
         </a>
       </div>
-      <h1 className="bg-blue-200">Vite + React</h1>
-      <h3>Faqih Rafiq Aufa</h3>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+      <h1 className='text-white text-6xl font-bold mb-16'>Vite + React</h1>
+      <div className="font-sm space-y-6 mb-8">
+        <button onClick={() => setCount((count) => count + 1)}
+          className=' bg-neutral-900 text-white py-2 px-6 rounded-lg text-lg'>
           count is {count}
         </button>
-        <p>
+        <p className='text-neutral-400'>
           Edit <code>src/App.jsx</code> and save to test HMR
         </p>
       </div>
-      <p className="read-the-docs">
+      <p className="text-neutral-500">
         Click on the Vite and React logos to learn more
       </p>
+    </div>
     </>
-  )
+  );
 }
 
 export default App
