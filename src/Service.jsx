@@ -1,18 +1,17 @@
-  const city = "jakarta";
-  const street = "Jl. Kebon Jeruk";
-
-export const getUsers = async () => {
+// src/Service.jsx
+export const getPosts = async () => {
   try {
-    const response = await fetch("https://jsonplaceholder.typicode.com/users");
-    const users = await response.json();
-    return users.map((user) => ({
-      name: user.name,
-      email: user.email,
-        city: city,
-        street: street,
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+    const posts = await response.json();
+    
+    return posts.map((post) => ({
+      id: post.id,
+      userId: post.userId,
+      title: post.title,
+      body: post.body,
     }));
   } catch (error) {
-    console.error("[Services] Gagal mengambil data:", error.message);
+    console.error("[Services] Gagal mengambil data posts:", error.message);
     throw error;
   }
 };
