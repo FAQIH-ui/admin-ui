@@ -13,10 +13,10 @@ return (
 
       <button
         type="button"
-        onClick={() => setIsClicked(true)} // Mengubah state menjadi true selamanya
+        onClick={() => setIsClicked(true)} 
         className={`mt-6 py-2 px-4 rounded-md font-semibold transition-all duration-300
           ${isClicked 
-            ? 'bg-[#b83016] text-white shadow-inner' // Warna Special Red2 tetap ada
+            ? 'bg-[#b83016] text-white shadow-inner' 
             : 'bg-gray-500 text-white hover:bg-gray-600'}`}
       >
         {isClicked ? "Tombol sudah diklik" : "Silakan Klik"}
