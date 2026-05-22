@@ -1,5 +1,5 @@
 import React from "react";
-import Logo from "../Elements/logo";
+import Logo from "../Elements/Logo";
 import Input from "../Elements/Input";
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import Icon from "../Elements/Icon";
