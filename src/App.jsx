@@ -14,15 +14,15 @@ function App() {
       errorElement: <ErrorPage />,
     },
     {
-      path: "login/",
+      path: "/login",
       element: <SignInPage />,
     },
     {
-      path: "register/",
+      path: "/register",
       element: <SignUpPage />,
     },
     {
-      path: "balance/",
+      path: "/balance",
       element: <BalancePage />,
     },
   ]);
