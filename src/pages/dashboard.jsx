@@ -7,7 +7,7 @@ import CardUpcomingBill from '../components/Fragments/CardUpcomingBill';
 import CardRecentTransaction from '../components/Fragments/CardRecentTransaction';
 import CardStatistic from '../components/Fragments/CardStatistic';
 import CardExpenseBreakdown from '../components/Fragments/CardExpenseBreakdown'; 
-import { transactions, bills, expensesBreakdowns } from '../data'; 
+import { transactions, bills, expensesBreakdowns, balances, goals, expensesStatistics } from '../data'; 
 
 function dashboard() {
   return (
@@ -15,10 +15,10 @@ function dashboard() {
       <MainLayout>
         <div className="grid sm:grid-cols-12 gap-6">
           <div className="sm:col-span-4">
-            <CardBalance />
+            <CardBalance data={balances} />
           </div>
           <div className="sm:col-span-4">
-            <CardGoal />
+            <CardGoal data={goals} />
           </div>
           <div className="sm:col-span-4">
             <CardUpcomingBill data={bills} />
@@ -27,7 +27,7 @@ function dashboard() {
             <CardRecentTransaction data={transactions} /> 
           </div>
           <div className="sm:col-span-8">
-            <CardStatistic />
+            <CardStatistic data={expensesStatistics} />
           </div>
           <div className="sm:col-span-8">
             <CardExpenseBreakdown data={expensesBreakdowns} />
