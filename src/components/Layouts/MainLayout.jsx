@@ -4,7 +4,7 @@ import Input from "../Elements/Input";
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import Icon from "../Elements/Icon";
 import {NavLink} from "react-router-dom";
-import { ThemeContext } from "../../context/themeContext";
+import { ThemeContext } from "../../context/ThemeContext";
 import { AuthContext } from "../../context/authContext";
 
 function MainLayout(props) {

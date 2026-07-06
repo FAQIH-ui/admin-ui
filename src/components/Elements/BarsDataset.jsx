@@ -1,6 +1,6 @@
 import { BarChart } from '@mui/x-charts/BarChart'; 
 import * as React from "react";
-import { ThemeContext } from "../../context/themeContext";
+import { ThemeContext } from "../../contextThemeContext";
 
 const chartSetting = {
   height: 300,

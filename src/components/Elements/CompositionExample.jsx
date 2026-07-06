@@ -5,7 +5,7 @@ import {
   useGaugeState,
 } from "@mui/x-charts/Gauge";
 import * as React from "react";
-import { ThemeContext } from "../../context/themeContext";
+import { ThemeContext } from "../../context/ThemeContext";
 
 function GaugePointer(props) {
   const { color } = props;
