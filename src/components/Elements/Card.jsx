@@ -9,7 +9,7 @@ function Card(props) {
         <div className="text-2xl">{title}</div> 
         {link && <div className="text-xs">View All</div>}
       </div>
-      <div className="flex-1 bg-white rounded-lg px-6 py-5 shadow-xl">
+      <div className="flex-1 bg-white dark:bg-special-bg2 rounded-lg px-6 py-5 shadow-xl dark:shadow-none transition-colors">
         {desc}
       </div>
     </div>

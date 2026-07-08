@@ -1,47 +1,172 @@
-import React from 'react';
+import React, { useState } from 'react';
 import LabeledInput from '../Elements/LabeledInput.jsx';
 import Button from '../Elements/Button.jsx';
-import { Link } from "react-router-dom";
+import AppSnackbar from '../Elements/AppSnackbar.jsx'; // sesuaikan path/props jika berbeda
+import { Link, useNavigate } from "react-router-dom";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+
+// Skema validasi Sign Up
+const SignUpSchema = Yup.object().shape({
+  name: Yup.string().required("Nama wajib diisi"),
+  email: Yup.string().email("Email tidak valid").required("Email wajib diisi"),
+  password: Yup.string().required("Password wajib diisi"),
+});
 
 function FormSignUp() {
+  const navigate = useNavigate();
+
+  // State untuk toast/snackbar
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success", // "success" | "error" (sesuai MUI Alert severity)
+  });
+
+  const closeSnackbar = (event, reason) => {
+    if (reason === "clickaway") return;
+    setSnackbar((prev) => ({ ...prev, open: false }));
+  };
+
+  const handleRegister = async (values, { setSubmitting }) => {
+    try {
+      const response = await fetch(
+        "https://jwt-auth-eight-neon.vercel.app/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: values.name,
+            email: values.email,
+            password: values.password,
+          }),
+        }
+      );
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        // Coba deteksi kasus email sudah terdaftar dari status/pesan API
+        const isEmailTaken =
+          response.status === 409 ||
+          (data?.message || "").toLowerCase().includes("email");
+
+        setSnackbar({
+          open: true,
+          message: isEmailTaken
+            ? "Email sudah pernah digunakan sebelumnya"
+            : data?.message || "Registrasi gagal, silakan coba lagi",
+          severity: "error",
+        });
+        return;
+      }
+
+      // Sukses
+      setSnackbar({
+        open: true,
+        message: "Register Berhasil",
+        severity: "success",
+      });
+
+      // Opsional: arahkan ke halaman login setelah beberapa saat
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: "Terjadi kesalahan jaringan, silakan coba lagi",
+        severity: "error",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <>
       {/* form start */}
       <div className="mt-16">
-        <form action="">
-          {/* Input Name - Tambahan untuk Sign Up */}
-          <div className="mb-6">
-            <LabeledInput 
-              label="Name"
-              id="name"
-              type="text"
-              placeholder="Insert your name here"
-              name="name"
-            />
-          </div>
-          
-          <div className="mb-6">
-            <LabeledInput 
-              label="Email Address"
-              id="email"
-              type="email"
-              placeholder="hello@example.com"
-              name="email"
-            />
-          </div>
-          
-          <div className="mb-6">
-            <LabeledInput 
-              label="Password"
-              id="password"
-              type="password"
-              placeholder="********"
-              name="password"
-            />
-          </div>
+        <Formik
+          initialValues={{
+            name: "",
+            email: "",
+            password: "",
+          }}
+          validationSchema={SignUpSchema}
+          onSubmit={handleRegister}
+        >
+          {({ isSubmitting }) => (
+            <Form>
+              {/* NAME */}
+              <div className="mb-6">
+                <Field name="name">
+                  {({ field }) => (
+                    <LabeledInput
+                      {...field}
+                      id="name"
+                      type="text"
+                      label="Name"
+                      placeholder="Insert your name here"
+                    />
+                  )}
+                </Field>
+                <ErrorMessage
+                  name="name"
+                  component="p"
+                  className="text-red-500 text-xs mt-1"
+                />
+              </div>
 
-          <Button type="submit">Sign Up</Button>
-        </form>
+              {/* EMAIL */}
+              <div className="mb-6">
+                <Field name="email">
+                  {({ field }) => (
+                    <LabeledInput
+                      {...field}
+                      id="email"
+                      type="email"
+                      label="Email Address"
+                      placeholder="hello@example.com"
+                    />
+                  )}
+                </Field>
+                <ErrorMessage
+                  name="email"
+                  component="p"
+                  className="text-red-500 text-xs mt-1"
+                />
+              </div>
+
+              {/* PASSWORD */}
+              <div className="mb-6">
+                <Field name="password">
+                  {({ field }) => (
+                    <LabeledInput
+                      {...field}
+                      id="password"
+                      type="password"
+                      label="Password"
+                      placeholder="********"
+                    />
+                  )}
+                </Field>
+                <ErrorMessage
+                  name="password"
+                  component="p"
+                  className="text-red-500 text-xs mt-1"
+                />
+              </div>
+
+              {/* BUTTON */}
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Loading..." : "Sign Up"}
+              </Button>
+            </Form>
+          )}
+        </Formik>
       </div>
       {/* form end */}
 
@@ -56,7 +181,6 @@ function FormSignUp() {
       <div className="mb-8">
         <Button type="button" variant="secondary">
           <span className="flex items-center justify-center">
-            {/* PERBAIKAN: Menyesuaikan atribut SVG agar valid di JSX */}
             <svg
               className="h-6 w-6 mr-2"
               xmlns="http://www.w3.org/2000/svg"
@@ -101,6 +225,14 @@ function FormSignUp() {
         </Link>
       </div>
       {/* link end */}
+
+      {/* Toast/Snackbar notification */}
+      <AppSnackbar
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={closeSnackbar}
+      />
     </>
   );
 }

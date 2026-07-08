@@ -19,3 +19,55 @@ export const goalService = async () => {
     };
   }
 };
+
+export const expenseService = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await axios.get(`${API_URL}/expenses`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("RAW /expenses response.data:", response.data);
+
+    return (
+      response.data?.data ??
+      response.data?.expenses ??
+      response.data?.result ??
+      response.data
+    );
+  } catch (error) {
+    throw {
+      status: error.response?.status,
+      msg: error.response?.data?.msg,
+    };
+  }
+};
+
+export const billService = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await axios.get(`${API_URL}/bills`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("RAW /bills response.data:", response.data);
+
+    return (
+      response.data?.data ??
+      response.data?.bills ??
+      response.data?.result ??
+      response.data
+    );
+  } catch (error) {
+    throw {
+      status: error.response?.status,
+      msg: error.response?.data?.msg,
+    };
+  }
+};

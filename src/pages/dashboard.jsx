@@ -6,14 +6,15 @@ import CardGoal from '../components/Fragments/CardGoal';
 import CardUpcomingBill from '../components/Fragments/CardUpcomingBill';
 import CardRecentTransaction from '../components/Fragments/CardRecentTransaction';
 import CardStatistic from '../components/Fragments/CardStatistic';
-import CardExpenseBreakdown from '../components/Fragments/CardExpenseBreakdown'; 
-import { transactions, bills, expensesBreakdowns, balances, goals, expensesStatistics } from '../data';
-import { goalService } from '../services/dataService.jsx';
+import CardExpenseBreakdown from '../components/Fragments/CardExpenseBreakdown';
+import { transactions, expensesBreakdowns, balances, expensesStatistics } from '../data';
+import { goalService, billService } from '../services/dataService.jsx';
 import { AuthContext } from '../context/authContext.jsx';
 import AppSnackbar from '../components/Elements/AppSnackbar.jsx';
 
 function dashboard() {
   const [goals, setGoals] = useState({});
+  const [bills, setBills] = useState([]);
   const { logout } = useContext(AuthContext);
 
   const [snackbar, setSnackbar] = useState({
@@ -36,18 +37,29 @@ function dashboard() {
         message: err.msg || "Terjadi kesalahan saat mengambil data goals",
         severity: "error",
       });
-      if (err.status === 401) {
-        logout();
-      }
+      if (err.status === 401) logout();
+    }
+  };
+
+  const fetchBills = async () => {
+    try {
+      const data = await billService();
+      setBills(data || []);
+    } catch (err) {
+      setSnackbar({
+        open: true,
+        message: err.msg || "Terjadi kesalahan saat mengambil data bills",
+        severity: "error",
+      });
+      if (err.status === 401) logout();
     }
   };
 
   useEffect(() => {
     fetchGoals();
+    fetchBills();
   }, []);
-  
-  console.log(goals);
-  
+
   return (
     <>
       <MainLayout>

@@ -2,6 +2,7 @@ import React from 'react'
 import LabeledInput from '../Elements/LabeledInput.jsx';
 import CheckBox from '../Elements/CheckBox.jsx';
 import Button from '../Elements/Button.jsx';
+import DarkModeToggle from '../Elements/DarkModeToggle.jsx';
 import { Link } from "react-router-dom"; 
 import { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -153,6 +154,10 @@ function FormSignIn({ onSubmit }) {
         </Link>
       </div>
       {/* link end */}
+      {/* dark mode toggle */}
+      <div className="flex justify-center mt-6">
+        <DarkModeToggle />
+      </div>
     </>
   );
 }

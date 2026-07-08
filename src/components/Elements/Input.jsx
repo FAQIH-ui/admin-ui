@@ -4,7 +4,7 @@ function Input(props) {
   const {
     id,
     icon = false,
-    backgroundColor = false,
+    backgroundColor = "bg-gray-06 dark:bg-special-bg3", // ⬅️ default background eksplisit, ikut dark mode
     border = "border-gray-03",
     ...rest
   } = props;
@@ -14,7 +14,7 @@ function Input(props) {
       <input
         className={`py-3 pl-4 text-sm rounded-md w-full border text-gray-01 
           ${border} focus:border-black focus:outline-none focus:ring-0 
-          ${backgroundColor || ""}
+          ${backgroundColor}
         `}
         id={id}
         {...rest}

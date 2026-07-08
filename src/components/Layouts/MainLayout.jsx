@@ -6,21 +6,26 @@ import Icon from "../Elements/Icon";
 import {NavLink} from "react-router-dom";
 import { ThemeContext } from "../../context/ThemeContext";
 import { AuthContext } from "../../context/authContext";
+import { logoutService } from "../../services/authService.jsx";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function MainLayout(props) {
   const { children } = props;
 
   const themes = [
-  { name: "theme-green", bgcolor: "bg-[#299D91]", color: "#299D91" },
-  { name: "theme-blue", bgcolor: "bg-[#1E90FF]", color: "#1E90FF" },
-  { name: "theme-purple", bgcolor: "bg-[#6A5ACD]", color: "#6A5ACD" },
-  { name: "theme-pink", bgcolor: "bg-[#DB7093]", color: "#DB7093" },
-  { name: "theme-brown", bgcolor: "bg-[#8B4513]", color: "#8B4513" },
-];
+    { name: "theme-green", bgcolor: "bg-[#299D91]", color: "#299D91" },
+    { name: "theme-blue", bgcolor: "bg-[#1E90FF]", color: "#1E90FF" },
+    { name: "theme-purple", bgcolor: "bg-[#6A5ACD]", color: "#6A5ACD" },
+    { name: "theme-pink", bgcolor: "bg-[#DB7093]", color: "#DB7093" },
+    { name: "theme-brown", bgcolor: "bg-[#8B4513]", color: "#8B4513" },
+  ];
 
-const { theme, setTheme } = useContext(ThemeContext);
+  const { theme, setTheme } = useContext(ThemeContext);
+  const { user, logout } = useContext(AuthContext);
+  const [loggingOut, setLoggingOut] = useState(false);
 
-    const menu = [
+  const menu = [
     { id: 1, name: "Overview", icon: <Icon.Overview />, link: "/" },
     { id: 2, name: "Balances", icon: <Icon.Balance />, link: "/balance" },
     { id: 3, name: "Transaction", icon: <Icon.Transaction />, link: "/transaction", },
@@ -30,34 +35,36 @@ const { theme, setTheme } = useContext(ThemeContext);
     { id: 7, name: "Settings", icon: <Icon.Setting />, link: "/setting" },
   ];
 
-  const { user, logout } = useContext(AuthContext);
-
   const handleLogout = async () => {
+    setLoggingOut(true);
     try {
       await logoutService();
-      logout(); 
     } catch (err) {
       console.error(err);
-      if (err.status === 401) {
-        logout();
-      }
+      // tetap lanjut logout di sisi klien walau request logout gagal
+    } finally {
+      logout();
+      setLoggingOut(false);
     }
   };
 
   return (
     <>
       <div className={`flex min-h-screen ${theme.name}`}>
-        <aside className="bg-defaultBlack w-28 sm:w-64 text-special-bg2 flex flex-col justify-between px-7 py-12">
+        {/* PERBAIKAN: text-special-bg2 -> text-sidebar-text
+            special-bg2 dipakai juga sebagai background card (ikut flip dark mode),
+            padahal sidebar selalu gelap → teksnya harus selalu terang (konstan) */}
+        <aside className="bg-sidebar-bg w-28 sm:w-64 text-sidebar-text flex flex-col justify-between px-7 py-12">
           <div>
             <div className="mb-10">
-                <Logo variant="secondary" />
+              <Logo variant="secondary" />
             </div>
-            						<nav>
+            <nav>
               {menu.map((item) => (
                 <NavLink
                   key={item.id}
-                    to={item.link}
-                    className={({ isActive }) =>
+                  to={item.link}
+                  className={({ isActive }) =>
                     `flex px-4 py-3 rounded-md hover:text-white hover:font-bold hover:scale-105 ${
                       isActive
                         ? "bg-primary text-white font-bold"
@@ -71,7 +78,7 @@ const { theme, setTheme } = useContext(ThemeContext);
               ))}
             </nav>
           </div>
-          					<div>
+          <div>
             Themes
             <div className="flex flex-col sm:flex-row gap-2 items-center">
               {themes.map((t) => (
@@ -105,25 +112,35 @@ const { theme, setTheme } = useContext(ThemeContext);
             </div>
           </div>
         </aside>
-        <div className="bg-special-mainBg flex-1 flex flex-col">
+        <div className="bg-special-mainBg flex-1 flex flex-col transition-colors">
           <header className="border border-b border-gray-05 px-6 py-7 flex items-center justify-between">
-			<div className="flex items-center">
-              <div className="font-bold text-2xl me-6">{user.name}</div> 
-			  <div className="text-gray-03 flex">
+            <div className="flex items-center">
+              <div className="font-bold text-2xl me-6 text-defaultBlack">{user.name}</div> 
+              <div className="text-gray-03 flex">
                 <Icon.ChevronRight size={20} />
                 <span>May 19, 2023</span>
               </div>
             </div>
-			<div className="flex items-center">
+            <div className="flex items-center">
               <div className="me-10">
                 <NotificationsActiveIcon className="text-primary scale-110" />
               </div> 
-			  <Input backgroundColor="bg-white" border="border-white" />
+              <Input backgroundColor="bg-white dark:bg-special-bg3" border="border-white dark:border-special-bg3" />
             </div>
           </header>
           <main className="flex-1 px-6 py-4">{children}</main>
         </div>
       </div>
+
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (t) => t.zIndex.drawer + 1 }}
+        open={loggingOut}
+      >
+        <div className="flex flex-col items-center gap-3">
+          <CircularProgress color="inherit" />
+          <span>Logging Out</span>
+        </div>
+      </Backdrop>
     </>
   );
 }
